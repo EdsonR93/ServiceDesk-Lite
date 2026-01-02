@@ -1,0 +1,45 @@
+name: Epic
+description: Large initiative that groups multiple Stories
+labels: ["epic"]
+body:
+  - type: textarea
+    id: overview
+    attributes:
+      label: Overview
+      description: What is this Epic and why does it matter?
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: What is included and excluded?
+      placeholder: |
+        Included:
+        - ...
+        Excluded:
+        - ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: included_issues
+    attributes:
+      label: Included Issues
+      description: Link Stories after creating them
+      placeholder: |
+        - [ ] #123 Story title
+        - [ ] #124 Story title
+    validations:
+      required: false

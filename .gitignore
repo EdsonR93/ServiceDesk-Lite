@@ -1,0 +1,39 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Env files
+.env
+.env.*.local
+
+# IntelliJ / Java
+.idea/
+*.iml
+out/
+target/
+*.log
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+
+# Gradle (if ever used)
+.gradle/
+build/
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# VS Code
+.vscode/
+
+# Coverage
+coverage/
+*.lcov
+
+# Misc
+*.tmp
