@@ -1,13 +1,21 @@
 ## Summary
 What does this PR change?
 
-## Related Issues
-- Closes #
+## Related Issue
+Closes #
+
+## Changes
+- 
 
 ## How to Test
-Steps to verify this PR.
+Steps to verify this PR works:
+- 
+
+## Notes (optional)
+Anything reviewers should know (tradeoffs, follow-ups, screenshots).
 
 ## Checklist
-- [ ] Tests added/updated (if needed)
+- [ ] Scope is small and focused
+- [ ] Acceptance criteria met (if Story)
 - [ ] Docs updated (if needed)
 - [ ] No secrets committed
