@@ -1,26 +1,83 @@
-# Full-Stack Project Template (Backend-Leaning)
+# ServiceDesk-Lite
 
-A reusable template repo for backend-first full-stack projects.
+ServiceDesk-Lite is a backend-focused, full-stack service desk / ticketing system designed to demonstrate
+real-world backend engineering practices using Java and Spring Boot.
 
-## Goals
-- Professional repo structure (backend, frontend, infra, docs)
-- Standardized GitHub Issues (Epics + Stories)
-- Docker-friendly local development
-- Clear documentation habits (architecture + ADRs)
+The project is intentionally scoped as a **solo-developer system** that starts small, works end-to-end,
+and grows incrementally using professional workflows (epics, stories, CI, testing, Docker).
 
-## Repo Structure
-- backend/  — API / services (e.g., Java + Spring Boot)
-- frontend/ — UI (e.g., Angular)
-- infra/    — Docker, environment examples
-- docs/     — architecture, ADRs, API notes
+---
 
-## Getting Started
-Run local infrastructure (Postgres):
-- docker compose -f infra/docker-compose.yml up -d
+## 🎯 Project Goals
 
-## Planning Standard
-We use GitHub Issues:
-- Epics = big feature areas
-- Stories = implementable work items
-- Each Epic tracks its Stories using checkboxes linking to issues:
-    - [ ] #123 Story title
+- Build a realistic backend system (not a toy CRUD app)
+- Demonstrate clean architecture and domain-driven thinking
+- Use professional tooling and workflows found in real teams
+- Be easy to run locally using Docker
+- Serve as a strong portfolio project for backend / full-stack roles
+
+---
+
+## 🧱 Core Features (Planned)
+
+- Ticket management (CRUD + lifecycle)
+- Authentication & authorization (JWT)
+- Organization-based multi-tenancy (lite)
+- Audit logging & traceability
+- API documentation (OpenAPI / Swagger)
+- CI pipeline with tests
+- Dockerized local development
+
+---
+
+## 🛠 Tech Stack
+
+### Backend
+- Java 17+
+- Spring Boot (Web, Security, Data JPA, Validation, Actuator)
+- PostgreSQL
+- Flyway migrations
+- Testcontainers (integration tests)
+
+### Frontend
+- Angular
+- TypeScript
+
+### Infrastructure
+- Docker & Docker Compose
+- GitHub Actions (CI)
+
+---
+
+## 📁 Repository Structure
+
+- backend/  — Spring Boot application
+- frontend/ — Angular application
+- infra/    — Docker Compose & environment config
+- docs/     — Architecture and API documentation
+
+---
+
+## 🚀 Local Development (high-level)
+
+Start infrastructure:
+ - docker compose -f infra/docker-compose.yml up -d
+
+Backend (later):
+ - cd backend
+ - mvn spring-boot:run
+
+Frontend (later):
+ - cd frontend
+ - npm install
+ - npm start
+
+---
+
+## 📌 Project Status
+
+This project is actively developed using GitHub Issues:
+- **Epics** = major feature areas
+- **Stories** = small, implementable units of work
+
+See the Issues tab for the roadmap and progress.
