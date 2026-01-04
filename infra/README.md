@@ -29,11 +29,22 @@ Additional services may be added as the project evolves.
 
 Start infrastructure:
 
- - docker compose -f infra/docker-compose.yml up -d
+ - docker compose -f infra/docker-compose.yml --env-file infra/env/.env.example up -d
 
 Stop infrastructure:
 
  - docker compose -f infra/docker-compose.yml down
+
+---
+
+## Test PostgreSQL
+
+With the infrastructure running, execute the following commands:
+
+ - docker exec -it servicedesk-postgres psql -U servicedesk -d servicedesk
+ - SELECT 1;
+
+It should return a single row with the value 1.
 
 ---
 
