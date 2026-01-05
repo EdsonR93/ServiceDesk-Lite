@@ -1,17 +1,65 @@
 # Contributing
 
-## Workflow
-- Create a branch: `feature/<short-name>` or `fix/<short-name>`
-- Open a PR early (draft is fine)
-- Link issues in PR description using `Closes #123`
+This repository follows a lightweight workflow designed for incremental delivery and clean history.
 
-## Definitions
-- **Epic**: Large work area that groups Stories
-- **Story**: Small, implementable unit with acceptance criteria
-- **Chore**: Non-feature work (refactor, config, cleanup)
-- **Bug**: Fix for incorrect behavior
+---
 
-## Quality bar
-- Keep changes small and reviewable
-- Add/adjust tests for non-trivial logic
-- Keep docs updated if behavior changes
+## Branching
+
+Create a new branch for every Story, Bug, or Chore.
+
+Recommended naming:
+- feature/story-<issue-number>-short-title
+- fix/bug-<issue-number>-short-title
+- chore/<issue-number>-short-title
+
+Examples:
+- feature/story-12-ticket-crud
+- fix/bug-33-null-pointer-login
+- chore/5-update-readme
+
+---
+
+## Commits
+
+Prefer one commit per Story when reasonable.
+
+Commit message format (suggested):
+- story(<issue-number>): short summary
+- bug(<issue-number>): short summary
+- chore(<issue-number>): short summary
+
+Examples:
+- story(12): add ticket create endpoint
+- chore(3): update repo documentation
+
+---
+
+## Pull Requests
+
+All changes merge through Pull Requests.
+
+PR requirements:
+- Link the Issue using "Closes #<issue-number>"
+- Describe what changed and why
+- Include basic test notes (even if manual)
+- Keep PRs small and focused
+
+---
+
+## Definition of Done
+
+A Story is considered done when:
+- The acceptance criteria are met
+- Code is readable and organized
+- Docs are updated if behavior changed
+- Basic tests were run (manual or automated)
+
+---
+
+## Issue Types
+
+- Epic: groups multiple Stories
+- Story: implementable unit with acceptance criteria
+- Bug: fixes incorrect behavior
+- Chore: non-feature work (cleanup, tooling, documentation)
