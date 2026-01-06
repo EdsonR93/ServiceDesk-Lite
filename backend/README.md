@@ -60,3 +60,20 @@ The backend will be implemented incrementally, starting with:
 - Authentication foundation
 
 Each step is tracked as a GitHub Story under the relevant Epic.
+
+---
+
+## How to test Flyway
+
+Start the backend with dev profile in the arguments:
+
+ - .\mvnw.cmd spring-boot:run "-Dspring-boot.run.arguments=--spring.profiles.active=dev"
+
+Verify schema table exists:
+
+ - docker exec -it servicedesk-postgres psql -U servicedesk -d servicedesk -c "\dt"
+ - docker exec -it servicedesk-postgres psql -U servicedesk -d servicedesk -c "SELECT version, description, success FROM flyway_schema_history;"
+
+It will show 1 row in the results. This confirms that Flyway ran successfully and applied the baseline migration.
+
+---
