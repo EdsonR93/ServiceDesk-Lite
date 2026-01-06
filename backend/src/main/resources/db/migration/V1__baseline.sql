@@ -1,0 +1,3 @@
+-- V1 baseline migration
+-- Intentionally minimal.
+-- This establishes Flyway tracking for ServiceDesk-Lite.
