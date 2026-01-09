@@ -82,4 +82,19 @@ You can verify the constraints in each table executing:
 
 Where <table_name> should match an existing table (organizations, users, memberships...).
 
+To Verify the constraints only allow the correct values run the following:
+
+ - docker exec -it servicedesk-postgres psql -U servicedesk -d servicedesk -c "INSERT INTO users (email,status) VALUES ('x@test.com','BAD');"
+ - docker exec -it servicedesk-postgres psql -U servicedesk -d servicedesk -c "INSERT INTO memberships (org_id,user_id,role) VALUES (gen_random_uuid(),gen_random_uuid(),'BAD');"
+
+They should fail with a CHECK constraint error.
+
+Verify the Triggers works by executing the following:
+
+ - docker exec -it servicedesk-postgres psql -U servicedesk -d servicedesk
+ - INSERT INTO organizations (name, slug) VALUES ('Acme', 'acme') RETURNING id, created_at, updated_at;
+ - UPDATE organizations SET name = 'Acme Inc.' WHERE slug = 'acme' RETURNING created_at, updated_at;
+
+updated_at should be newer after the UPDATE.
+
 ---
