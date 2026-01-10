@@ -60,3 +60,41 @@ The backend will be implemented incrementally, starting with:
 - Authentication foundation
 
 Each step is tracked as a GitHub Story under the relevant Epic.
+
+---
+
+## How to test Flyway
+
+Start the backend with dev profile enabled:
+
+ - .\mvnw.cmd spring-boot:run "-Dspring-boot.run.arguments=--spring.profiles.active=dev"
+
+Verify schema table exists:
+
+ - docker exec -it servicedesk-postgres psql -U servicedesk -d servicedesk -c "\dt"
+ - docker exec -it servicedesk-postgres psql -U servicedesk -d servicedesk -c "SELECT version, description, success FROM flyway_schema_history;"
+
+It will show 1 row in the results. This confirms that Flyway ran successfully and applied the baseline migration (V1__baseline.sql).
+
+You can verify the constraints in each table executing:
+
+ - docker exec -it servicedesk-postgres psql -U servicedesk -d servicedesk -c "\d <table_name>"
+
+Where <table_name> should match an existing table (organizations, users, memberships...).
+
+To Verify the constraints only allow the correct values run the following:
+
+ - docker exec -it servicedesk-postgres psql -U servicedesk -d servicedesk -c "INSERT INTO users (email,status) VALUES ('x@test.com','BAD');"
+ - docker exec -it servicedesk-postgres psql -U servicedesk -d servicedesk -c "INSERT INTO memberships (org_id,user_id,role) VALUES (gen_random_uuid(),gen_random_uuid(),'BAD');"
+
+They should fail with a CHECK constraint error.
+
+Verify the Triggers works by executing the following:
+
+ - docker exec -it servicedesk-postgres psql -U servicedesk -d servicedesk
+ - INSERT INTO organizations (name, slug) VALUES ('Acme', 'acme') RETURNING id, created_at, updated_at;
+ - UPDATE organizations SET name = 'Acme Inc.' WHERE slug = 'acme' RETURNING created_at, updated_at;
+
+updated_at should be newer after the UPDATE.
+
+---
