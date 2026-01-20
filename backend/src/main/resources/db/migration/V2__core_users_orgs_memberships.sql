@@ -44,5 +44,3 @@ ALTER TABLE users
 CREATE INDEX IF NOT EXISTS idx_memberships_org_id ON memberships(org_id);
 CREATE INDEX IF NOT EXISTS idx_memberships_user_id ON memberships(user_id);
 CREATE UNIQUE INDEX uq_users_email_lower ON users (lower(email));
-
-Added check constraints to memberships and users, Added update triggers for updated_at in the tables that have it, updated the readme documentation accordingly
