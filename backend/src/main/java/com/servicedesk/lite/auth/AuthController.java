@@ -1,5 +1,7 @@
 package com.servicedesk.lite.auth;
 
+import com.servicedesk.lite.auth.dto.LoginRequest;
+import com.servicedesk.lite.auth.dto.LoginResponse;
 import com.servicedesk.lite.auth.dto.RegisterRequest;
 import com.servicedesk.lite.auth.dto.RegisterResponse;
 import jakarta.validation.Valid;
@@ -24,5 +26,10 @@ public class AuthController {
     public RegisterResponse register(@Valid @RequestBody RegisterRequest request) {
         UUID id = authService.register(request);
         return new RegisterResponse(id);
+    }
+
+    @PostMapping("/login")
+    public LoginResponse login(@Valid @RequestBody LoginRequest request) {
+        return authService.login(request);
     }
 }

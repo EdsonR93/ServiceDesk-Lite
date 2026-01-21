@@ -1,5 +1,7 @@
 package com.servicedesk.lite.auth;
 
+import com.servicedesk.lite.auth.dto.LoginRequest;
+import com.servicedesk.lite.auth.dto.LoginResponse;
 import com.servicedesk.lite.auth.dto.RegisterRequest;
 import com.servicedesk.lite.auth.exception.EmailAlreadyExistsException;
 import com.servicedesk.lite.user.Status;
@@ -42,6 +44,10 @@ public class AuthService {
         newUser = userRepository.save(new User(emailNormalized, hashedPassword, fullName, Status.ACTIVE));
         return newUser.getId();
 
+    }
+
+    public LoginResponse login(LoginRequest loginRequest) {
+        return new LoginResponse("TODO","Bearer",0);
     }
 
 }
