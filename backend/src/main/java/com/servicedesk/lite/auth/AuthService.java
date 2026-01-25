@@ -5,6 +5,7 @@ import com.servicedesk.lite.auth.dto.LoginResponse;
 import com.servicedesk.lite.auth.dto.RegisterRequest;
 import com.servicedesk.lite.auth.exception.EmailAlreadyExistsException;
 import com.servicedesk.lite.auth.exception.InvalidCredentialsException;
+import com.servicedesk.lite.auth.jwt.JwtService;
 import com.servicedesk.lite.user.Status;
 import com.servicedesk.lite.user.User;
 import com.servicedesk.lite.user.UserRepository;
@@ -20,9 +21,11 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    private final JwtService jwtService;
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
     @Transactional
     public UUID register(RegisterRequest registerRequest) {
@@ -56,7 +59,8 @@ public class AuthService {
             User user = optUser.get();
             if (user.getStatus() == Status.ACTIVE) {
                 if (passwordEncoder.matches(loginRequest.getPassword(), user.getPasswordHash())) {
-                    return new LoginResponse("TODO", "Bearer", 0);
+                    String token = jwtService.generateAccessToken(user);
+                    return new LoginResponse(token, "Bearer", jwtService.accessTokenTtlSeconds());
                 }
             }
         }
