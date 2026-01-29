@@ -9,6 +9,7 @@ import java.time.OffsetDateTime;
 import java.util.Map;
 
 import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -19,6 +20,17 @@ public class GlobalExceptionHandler {
             "timestamp", OffsetDateTime.now().toString(),
             "status", 409,
             "error","Conflict",
+            "message", ex.getMessage(),
+            "path",request.getRequestURI()
+        ));
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<?> handleInvalidCredentialsException(InvalidCredentialsException ex, HttpServletRequest request) {
+        return ResponseEntity.status(UNAUTHORIZED).body(Map.of(
+            "timestamp", OffsetDateTime.now().toString(),
+            "status", 401,
+            "error","Unauthorized",
             "message", ex.getMessage(),
             "path",request.getRequestURI()
         ));
