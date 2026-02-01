@@ -17,7 +17,6 @@ public class AuthController {
         this.authService = authService;
     }
 
-
     @PostMapping("/register")
     public RegisterResponse register(@Valid @RequestBody RegisterRequest request) {
         UUID id = authService.register(request);
@@ -30,7 +29,7 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public MeResponse testLogin(@AuthenticationPrincipal Jwt jwt) {
+    public MeResponse me(@AuthenticationPrincipal Jwt jwt) {
         return new MeResponse(jwt.getSubject(), jwt.getClaimAsString("email"),jwt.getClaimAsString("status") );
     }
 }
