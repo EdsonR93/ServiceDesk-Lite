@@ -31,8 +31,6 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                 .requestMatchers(HttpMethod.GET, "/actuator/health").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/auth/me").authenticated()
-                .requestMatchers(HttpMethod.GET, "/api/auth/roles-check").authenticated()
-                .requestMatchers(HttpMethod.GET, "/api/auth/admin-check").hasRole("ADMIN")
                 .anyRequest().permitAll() // later -> authenticated()
             ).oauth2ResourceServer((oauth2ResourceServer) ->
                 oauth2ResourceServer

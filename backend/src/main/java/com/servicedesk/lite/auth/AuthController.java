@@ -17,7 +17,6 @@ public class AuthController {
         this.authService = authService;
     }
 
-
     @PostMapping("/register")
     public RegisterResponse register(@Valid @RequestBody RegisterRequest request) {
         UUID id = authService.register(request);
