@@ -23,7 +23,8 @@ public class OrganizationService {
     @Transactional
     public UUID createOrganization(CreateOrganizationRequest req, UUID creatorUserId){
         Organization savedOrg = organizationRepository.save(new Organization(req.getName(), req.getSlug()));
-        membershipRepository.save(new Membership(savedOrg.getId(), creatorUserId, MembershipRole.ADMIN));
-        return savedOrg.getId();
+        UUID orgId = savedOrg.getId();
+        membershipRepository.save(new Membership(orgId, creatorUserId, MembershipRole.ADMIN));
+        return orgId;
     }
 }
