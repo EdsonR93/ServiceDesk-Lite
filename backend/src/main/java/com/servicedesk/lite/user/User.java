@@ -1,7 +1,6 @@
 package com.servicedesk.lite.user;
 
 import jakarta.persistence.*;
-
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
