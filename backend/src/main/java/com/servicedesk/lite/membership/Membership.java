@@ -28,8 +28,7 @@ public class Membership {
 
     public Membership() {}
 
-    public Membership(UUID id, UUID orgId, UUID userId, MembershipRole role) {
-        this.id = id;
+    public Membership(UUID orgId, UUID userId, MembershipRole role) {
         this.orgId = orgId;
         this.userId = userId;
         this.role = role;

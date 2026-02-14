@@ -27,4 +27,5 @@ public class CreateOrganizationRequest {
     public void setSlug(String slug) {
         this.slug = slug;
     }
+
 }
