@@ -124,4 +124,8 @@ public class Ticket {
     public OffsetDateTime getUpdatedAt() {
         return updatedAt;
     }
+
+    public void setTicketKey(String ticketKey) {
+        this.ticketKey = ticketKey;
+    }
 }
