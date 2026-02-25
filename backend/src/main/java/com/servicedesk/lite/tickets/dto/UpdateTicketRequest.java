@@ -44,7 +44,7 @@ public class UpdateTicketRequest {
         this.status = status;
     }
 
-    public Boolean isClearAssignee() {
+    public Boolean getClearAssignee() {
         return clearAssignee;
     }
 
