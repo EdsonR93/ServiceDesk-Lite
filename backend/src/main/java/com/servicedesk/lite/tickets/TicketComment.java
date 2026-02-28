@@ -73,4 +73,7 @@ public class TicketComment {
         this.body = body;
     }
 
+    public OffsetDateTime getCreatedAt() {
+        return createdAt;
+    }
 }
