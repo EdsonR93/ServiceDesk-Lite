@@ -4,11 +4,11 @@ import com.servicedesk.lite.auth.AuthContext;
 import com.servicedesk.lite.org.Organization;
 import com.servicedesk.lite.org.OrganizationRepository;
 import com.servicedesk.lite.org.context.OrgContext;
-import com.servicedesk.lite.tickets.dto.CreateTicketRequest;
-import com.servicedesk.lite.tickets.dto.TicketResponse;
-import com.servicedesk.lite.tickets.dto.UpdateTicketRequest;
+import com.servicedesk.lite.tickets.dto.*;
 import com.servicedesk.lite.user.User;
 import com.servicedesk.lite.user.UserValidator;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -127,5 +127,53 @@ public class TicketService {
                 "Invalid status transition"
             );
         }
+    }
+
+    private TicketSummaryResponse toSummaryResponse(Ticket ticket) {
+        TicketSummaryResponse dto = new TicketSummaryResponse();
+        dto.setId(ticket.getId());
+        dto.setTicketKey(ticket.getTicketKey());
+        dto.setTitle(ticket.getTitle());
+        dto.setStatus(ticket.getStatus());
+        dto.setAssigneeUserId(
+            ticket.getAssignee() != null ? ticket.getAssignee().getId() : null
+        );
+        dto.setCreatedAt(ticket.getCreatedAt());
+        dto.setUpdatedAt(ticket.getUpdatedAt());
+        return dto;
+    }
+
+    @Transactional(readOnly = true)
+    public Page<TicketSummaryResponse> listTickets(TicketSearchFilter filter, Pageable pageable) {
+        UUID orgId = OrgContext.getOrgId();
+        Page<Ticket> page;
+
+        if (filter.getStatus() != null && filter.getAssigneeUserId() != null) {
+            page = ticketRepository.findAllByOrg_IdAndStatusAndAssignee_Id(
+                orgId,
+                filter.getStatus(),
+                filter.getAssigneeUserId(),
+                pageable
+            );
+        } else if (filter.getStatus() != null) {
+            page = ticketRepository.findAllByOrg_IdAndStatus(
+                orgId,
+                filter.getStatus(),
+                pageable
+            );
+        } else if (filter.getAssigneeUserId() != null) {
+            page = ticketRepository.findAllByOrg_IdAndAssignee_Id(
+                orgId,
+                filter.getAssigneeUserId(),
+                pageable
+            );
+        } else {
+            page = ticketRepository.findAllByOrg_Id(
+                orgId,
+                pageable
+            );
+        }
+
+        return page.map(this::toSummaryResponse);
     }
 }
