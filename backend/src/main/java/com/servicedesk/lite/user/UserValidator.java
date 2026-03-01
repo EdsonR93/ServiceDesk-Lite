@@ -2,11 +2,13 @@ package com.servicedesk.lite.user;
 
 import com.servicedesk.lite.membership.MembershipRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Service
 public class UserValidator {
     private final UserRepository userRepository;
     private final MembershipRepository membershipRepository;
