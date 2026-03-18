@@ -1,5 +1,9 @@
-package com.servicedesk.lite.org.exception;
+package com.servicedesk.lite.error;
 
+import com.servicedesk.lite.auth.exception.EmailAlreadyExistsException;
+import com.servicedesk.lite.auth.exception.InvalidCredentialsException;
+import com.servicedesk.lite.org.exception.OrgForbiddenException;
+import com.servicedesk.lite.org.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -11,9 +15,33 @@ import java.util.Map;
 
 import static org.springframework.http.HttpStatus.*;
 
-@RestControllerAdvice(basePackages = "com.servicedesk.lite.org")
-public class OrgExceptionHandler {
+@RestControllerAdvice
+public class GlobalExceptionHandler {
 
+    //Auth exceptions
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<?> handleEmailAlreadyExists(EmailAlreadyExistsException ex, HttpServletRequest request) {
+        return ResponseEntity.status(CONFLICT).body(Map.of(
+            "timestamp", OffsetDateTime.now().toString(),
+            "status", 409,
+            "error", "Conflict",
+            "message", ex.getMessage(),
+            "path", request.getRequestURI()
+        ));
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<?> handleInvalidCredentialsException(InvalidCredentialsException ex, HttpServletRequest request) {
+        return ResponseEntity.status(UNAUTHORIZED).body(Map.of(
+            "timestamp", OffsetDateTime.now().toString(),
+            "status", 401,
+            "error", "Unauthorized",
+            "message", ex.getMessage(),
+            "path", request.getRequestURI()
+        ));
+    }
+
+    //Org and Membership exceptions
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<?> handleDataIntegrityViolationException(DataIntegrityViolationException ex, HttpServletRequest request) {
         String message = ex.getMostSpecificCause().getMessage();
