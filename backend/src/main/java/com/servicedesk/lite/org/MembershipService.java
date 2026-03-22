@@ -5,9 +5,9 @@ import com.servicedesk.lite.membership.MembershipRepository;
 import com.servicedesk.lite.membership.MembershipRole;
 import com.servicedesk.lite.org.dto.AddMemberRequest;
 import com.servicedesk.lite.org.exception.OrgForbiddenException;
-import com.servicedesk.lite.org.exception.UserNotFoundException;
 import com.servicedesk.lite.user.User;
 import com.servicedesk.lite.user.UserRepository;
+import com.servicedesk.lite.user.exceptions.UserNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

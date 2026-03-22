@@ -2,10 +2,10 @@ package com.servicedesk.lite.tickets.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class UnauthorizedCommentAuthorException extends RuntimeException {
+public class InvalidAssigneeOperationException extends RuntimeException {
     private final HttpStatus statusCode;
 
-    public UnauthorizedCommentAuthorException(String message, HttpStatus statusCode) {
+    public InvalidAssigneeOperationException(String message, HttpStatus statusCode) {
         super(message);
         this.statusCode = statusCode;
     }

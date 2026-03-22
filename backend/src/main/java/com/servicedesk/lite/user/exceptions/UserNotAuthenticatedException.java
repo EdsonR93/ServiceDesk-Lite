@@ -1,11 +1,11 @@
-package com.servicedesk.lite.tickets.exceptions;
+package com.servicedesk.lite.user.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class UnauthorizedCommentAuthorException extends RuntimeException {
+public class UserNotAuthenticatedException extends RuntimeException {
     private final HttpStatus statusCode;
 
-    public UnauthorizedCommentAuthorException(String message, HttpStatus statusCode) {
+    public UserNotAuthenticatedException(String message, HttpStatus statusCode) {
         super(message);
         this.statusCode = statusCode;
     }

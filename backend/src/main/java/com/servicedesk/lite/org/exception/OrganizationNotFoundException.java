@@ -1,11 +1,11 @@
-package com.servicedesk.lite.tickets.exceptions;
+package com.servicedesk.lite.org.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class UnauthorizedCommentAuthorException extends RuntimeException {
+public class OrganizationNotFoundException extends RuntimeException {
     private final HttpStatus statusCode;
 
-    public UnauthorizedCommentAuthorException(String message, HttpStatus statusCode) {
+    public OrganizationNotFoundException(HttpStatus statusCode, String message) {
         super(message);
         this.statusCode = statusCode;
     }

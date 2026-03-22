@@ -1,11 +1,11 @@
-package com.servicedesk.lite.tickets.exceptions;
+package com.servicedesk.lite.user.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class OrganizationNotFoundException extends RuntimeException {
+public class UserInactiveException extends RuntimeException {
     private final HttpStatus statusCode;
 
-    public OrganizationNotFoundException(HttpStatus statusCode, String message) {
+    public UserInactiveException(String message, HttpStatus statusCode) {
         super(message);
         this.statusCode = statusCode;
     }

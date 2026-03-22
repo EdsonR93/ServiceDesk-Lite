@@ -3,7 +3,7 @@ package com.servicedesk.lite.error;
 import com.servicedesk.lite.auth.exception.EmailAlreadyExistsException;
 import com.servicedesk.lite.auth.exception.InvalidCredentialsException;
 import com.servicedesk.lite.org.exception.OrgForbiddenException;
-import com.servicedesk.lite.org.exception.UserNotFoundException;
+import com.servicedesk.lite.user.exceptions.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
