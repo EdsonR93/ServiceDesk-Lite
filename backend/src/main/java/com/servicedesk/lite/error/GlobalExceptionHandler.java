@@ -3,7 +3,11 @@ package com.servicedesk.lite.error;
 import com.servicedesk.lite.auth.exception.EmailAlreadyExistsException;
 import com.servicedesk.lite.auth.exception.InvalidCredentialsException;
 import com.servicedesk.lite.org.exception.OrgForbiddenException;
-import com.servicedesk.lite.user.exceptions.UserNotFoundException;
+import com.servicedesk.lite.org.exception.OrganizationNotFoundException;
+import com.servicedesk.lite.tickets.exceptions.InvalidAssigneeOperationException;
+import com.servicedesk.lite.tickets.exceptions.InvalidStatusTransitionException;
+import com.servicedesk.lite.tickets.exceptions.TicketNotFoundException;
+import com.servicedesk.lite.user.exceptions.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -14,8 +18,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -24,95 +26,113 @@ public class GlobalExceptionHandler {
 
     //Auth exceptions
     @ExceptionHandler(EmailAlreadyExistsException.class)
-    public ResponseEntity<?> handleEmailAlreadyExists(EmailAlreadyExistsException ex, HttpServletRequest request) {
-        return ResponseEntity.status(CONFLICT).body(Map.of(
-            "timestamp", OffsetDateTime.now().toString(),
-            "status", 409,
-            "error", "Conflict",
-            "message", ex.getMessage(),
-            "path", request.getRequestURI()
-        ));
+    public ResponseEntity<ApiErrorResponse> handleEmailAlreadyExists(EmailAlreadyExistsException ex, HttpServletRequest request) {
+        return ResponseEntity.status(CONFLICT).body(
+            buildErrorResponse(CONFLICT, ex.getMessage(), request)
+        );
     }
 
     @ExceptionHandler(InvalidCredentialsException.class)
-    public ResponseEntity<?> handleInvalidCredentialsException(InvalidCredentialsException ex, HttpServletRequest request) {
-        return ResponseEntity.status(UNAUTHORIZED).body(Map.of(
-            "timestamp", OffsetDateTime.now().toString(),
-            "status", 401,
-            "error", "Unauthorized",
-            "message", ex.getMessage(),
-            "path", request.getRequestURI()
-        ));
+    public ResponseEntity<ApiErrorResponse> handleInvalidCredentialsException(InvalidCredentialsException ex, HttpServletRequest request) {
+        return ResponseEntity.status(UNAUTHORIZED).body(
+            buildErrorResponse(UNAUTHORIZED, ex.getMessage(), request)
+        );
     }
 
     //Org and Membership exceptions
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<?> handleDataIntegrityViolationException(DataIntegrityViolationException ex, HttpServletRequest request) {
+    public ResponseEntity<ApiErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException ex, HttpServletRequest request) {
         String message = ex.getMostSpecificCause().getMessage();
 
         if (message != null) {
             if (message.contains("organizations_slug_key")) {
-                return ResponseEntity.status(CONFLICT).body(Map.of(
-                    "timestamp", OffsetDateTime.now().toString(),
-                    "status", 409,
-                    "error", "Conflict",
-                    "message", "Organization slug already exists",
-                    "path", request.getRequestURI()
-                ));
+                return ResponseEntity.status(CONFLICT).body(
+                    buildErrorResponse(CONFLICT, "Organization slug already exists", request
+                    ));
             } else if (message.contains("uq_membership_org_user")) {
-                return ResponseEntity.status(CONFLICT).body(Map.of(
-                    "timestamp", OffsetDateTime.now().toString(),
-                    "status", 409,
-                    "error", "Conflict",
-                    "message", "User is already a member of this organization",
-                    "path", request.getRequestURI()
-                ));
+                return ResponseEntity.status(CONFLICT).body(
+                    buildErrorResponse(CONFLICT, "User is already a member of the organization", request)
+                );
             }
         }
-
-
-        return ResponseEntity.status(CONFLICT).body(Map.of(
-            "timestamp", OffsetDateTime.now().toString(),
-            "status", 409,
-            "error", "Conflict",
-            "message", "Conflict",
-            "path", request.getRequestURI()
-        ));
-
+        return ResponseEntity.status(CONFLICT).body(
+            buildErrorResponse(CONFLICT, "Data integrity violation", request)
+        );
     }
 
     @ExceptionHandler(OrgForbiddenException.class)
-    public ResponseEntity<?> handleOrgForbiddenException(OrgForbiddenException ex, HttpServletRequest request) {
-        return ResponseEntity.status(FORBIDDEN).body(Map.of(
-            "timestamp", OffsetDateTime.now().toString(),
-            "status", 403,
-            "error", "Forbidden",
-            "message", ex.getMessage(),
-            "path", request.getRequestURI()
-        ));
+    public ResponseEntity<ApiErrorResponse> handleOrgForbiddenException(OrgForbiddenException ex, HttpServletRequest request) {
+        return ResponseEntity.status(FORBIDDEN).body(
+            buildErrorResponse(FORBIDDEN, ex.getMessage(), request)
+        );
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException ex, HttpServletRequest request) {
-        return ResponseEntity.status(NOT_FOUND).body(Map.of(
-            "timestamp", OffsetDateTime.now().toString(),
-            "status", 404,
-            "error", "Not found",
-            "message", ex.getMessage(),
-            "path", request.getRequestURI()
-        ));
+    public ResponseEntity<ApiErrorResponse> handleUserNotFoundException(UserNotFoundException ex, HttpServletRequest request) {
+        return ResponseEntity.status(NOT_FOUND).body(
+            buildErrorResponse(NOT_FOUND, ex.getMessage(), request)
+        );
+    }
+
+    @ExceptionHandler(UserNotAuthenticatedException.class)
+    public ResponseEntity<ApiErrorResponse> handleUserNotAuthenticatedException(UserNotAuthenticatedException ex, HttpServletRequest request) {
+        return ResponseEntity.status(UNAUTHORIZED).body(
+            buildErrorResponse(UNAUTHORIZED, ex.getMessage(), request)
+        );
+    }
+
+    @ExceptionHandler(UserInactiveException.class)
+    public ResponseEntity<ApiErrorResponse> handleUserInactiveException(UserInactiveException ex, HttpServletRequest request) {
+        return ResponseEntity.status(FORBIDDEN).body(
+            buildErrorResponse(FORBIDDEN, ex.getMessage(), request)
+        );
+    }
+
+    @ExceptionHandler(UserNotInOrganizationException.class)
+    public ResponseEntity<ApiErrorResponse> handleUserNotInOrganizationException(UserNotInOrganizationException ex, HttpServletRequest request) {
+        return ResponseEntity.status(FORBIDDEN).body(
+            buildErrorResponse(FORBIDDEN, ex.getMessage(), request)
+        );
+    }
+
+    @ExceptionHandler(AssigneeNotActiveException.class)
+    public ResponseEntity<ApiErrorResponse> handleAssigneeNotActiveException(AssigneeNotActiveException ex, HttpServletRequest request) {
+        return ResponseEntity.status(BAD_REQUEST).body(
+            buildErrorResponse(BAD_REQUEST, ex.getMessage(), request)
+        );
+    }
+
+    @ExceptionHandler(OrganizationNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleOrganizationNotFoundException(OrganizationNotFoundException ex, HttpServletRequest request) {
+        return ResponseEntity.status(NOT_FOUND).body(
+            buildErrorResponse(NOT_FOUND, ex.getMessage(), request)
+        );
+    }
+
+    @ExceptionHandler(TicketNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleTicketNotFoundException(TicketNotFoundException ex, HttpServletRequest request) {
+        return ResponseEntity.status(NOT_FOUND).body(
+            buildErrorResponse(NOT_FOUND, ex.getMessage(), request)
+        );
+    }
+
+    @ExceptionHandler(InvalidAssigneeOperationException.class)
+    public ResponseEntity<ApiErrorResponse> handleInvalidAssigneeOperationException(InvalidAssigneeOperationException ex, HttpServletRequest request) {
+        return ResponseEntity.status(BAD_REQUEST).body(
+            buildErrorResponse(BAD_REQUEST, ex.getMessage(), request)
+        );
+    }
+
+    @ExceptionHandler(InvalidStatusTransitionException.class)
+    public ResponseEntity<ApiErrorResponse> handleInvalidStatusTransitionException(InvalidStatusTransitionException ex, HttpServletRequest request) {
+        return ResponseEntity.status(CONFLICT).body(
+            buildErrorResponse(CONFLICT, ex.getMessage(), request)
+        );
     }
 
     @ExceptionHandler(ResponseStatusException.class)
     public ApiErrorResponse handleResponseStatusException(ResponseStatusException ex, HttpServletRequest request) {
-        return new ApiErrorResponse(
-            OffsetDateTime.now(),
-            ex.getStatusCode().value(),
-            Objects.requireNonNull(resolve(ex.getStatusCode().value())).getReasonPhrase(),
-            ex.getReason(),
-            request.getRequestURI(),
-            List.of()
-        );
+        return mapToApiErrorResponse(ex, request);
     }
 
     private ApiErrorResponse mapToApiErrorResponse(ResponseStatusException ex, HttpServletRequest req) {
