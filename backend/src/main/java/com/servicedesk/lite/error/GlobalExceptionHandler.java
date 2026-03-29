@@ -135,6 +135,11 @@ public class GlobalExceptionHandler {
         return mapToApiErrorResponse(ex, request);
     }
 
+    @ExceptionHandler(Exception.class)
+    public ApiErrorResponse fallbackExceptionHandler(Exception ex, HttpServletRequest request) {
+        return buildErrorResponse(INTERNAL_SERVER_ERROR, ex.getMessage(), request);
+    }
+
     private ApiErrorResponse mapToApiErrorResponse(ResponseStatusException ex, HttpServletRequest req) {
         HttpStatus statusCode = HttpStatus.resolve(ex.getStatusCode().value());
 
