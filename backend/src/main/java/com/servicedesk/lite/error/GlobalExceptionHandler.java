@@ -130,6 +130,9 @@ public class GlobalExceptionHandler {
         );
     }
 
+    // TEMPORARY FALLBACK:
+    // Handles legacy ResponseStatusException usage during migration to custom domain exceptions.
+    // This should be removed once all services stop throwing ResponseStatusException.
     @ExceptionHandler(ResponseStatusException.class)
     public ApiErrorResponse handleResponseStatusException(ResponseStatusException ex, HttpServletRequest request) {
         return mapToApiErrorResponse(ex, request);
