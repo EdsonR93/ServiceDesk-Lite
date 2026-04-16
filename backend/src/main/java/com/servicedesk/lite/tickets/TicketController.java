@@ -1,6 +1,7 @@
 package com.servicedesk.lite.tickets;
 
 import com.servicedesk.lite.tickets.dto.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+@Tag(name = "Tickets", description = "Ticket and ticket comment endpoints")
 @RestController
 @RequestMapping("/api/tickets")
 public class TicketController {
@@ -44,7 +46,7 @@ public class TicketController {
     public Page<TicketCommentResponse> listComments(@PathVariable UUID ticketId, Pageable pageable) {
         return ticketCommentService.listComments(ticketId, pageable);
     }
-
+    
     @GetMapping
     public Page<TicketSummaryResponse> listTickets(@RequestParam(required = false) TicketStatus status, @RequestParam(required = false) UUID assigneeUserId, @PageableDefault(sort = "createdAt",
         direction = Sort.Direction.DESC) Pageable pageable) {

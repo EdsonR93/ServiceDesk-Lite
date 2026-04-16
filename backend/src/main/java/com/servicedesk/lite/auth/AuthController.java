@@ -1,6 +1,7 @@
 package com.servicedesk.lite.auth;
 
 import com.servicedesk.lite.auth.dto.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+@Tag(name = "Auth", description = "Authentication and current-user endpoints")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -30,6 +32,6 @@ public class AuthController {
 
     @GetMapping("/me")
     public MeResponse me(@AuthenticationPrincipal Jwt jwt) {
-        return new MeResponse(jwt.getSubject(), jwt.getClaimAsString("email"),jwt.getClaimAsString("status") );
+        return new MeResponse(jwt.getSubject(), jwt.getClaimAsString("email"), jwt.getClaimAsString("status"));
     }
 }
