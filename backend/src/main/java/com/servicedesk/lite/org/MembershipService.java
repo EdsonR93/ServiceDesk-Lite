@@ -3,11 +3,12 @@ package com.servicedesk.lite.org;
 import com.servicedesk.lite.membership.Membership;
 import com.servicedesk.lite.membership.MembershipRepository;
 import com.servicedesk.lite.membership.MembershipRole;
+import com.servicedesk.lite.membership.exception.MembershipAlreadyExistsException;
 import com.servicedesk.lite.org.dto.AddMemberRequest;
 import com.servicedesk.lite.org.exception.OrgForbiddenException;
-import com.servicedesk.lite.org.exception.UserNotFoundException;
 import com.servicedesk.lite.user.User;
 import com.servicedesk.lite.user.UserRepository;
+import com.servicedesk.lite.user.exceptions.UserNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +37,10 @@ public class MembershipService {
         String email = req.getEmail().trim().toLowerCase();
         Optional<User> targetUserOpt = userRepository.findByEmailIgnoreCase(email);
         User targetUser = targetUserOpt.orElseThrow((() -> new UserNotFoundException("User with email: " + email + " not found")));
+
+        if (membershipRepository.existsByOrgIdAndUserId(orgId, targetUser.getId())) {
+            throw new MembershipAlreadyExistsException("User is already a member of the organization");
+        }
 
         Membership newMembership = membershipRepository.save(new Membership(orgId, targetUser.getId(), req.getRole()));
         return newMembership.getId();

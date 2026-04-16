@@ -4,14 +4,13 @@ import com.servicedesk.lite.auth.AuthContext;
 import com.servicedesk.lite.org.context.OrgContext;
 import com.servicedesk.lite.tickets.dto.CreateCommentRequest;
 import com.servicedesk.lite.tickets.dto.TicketCommentResponse;
+import com.servicedesk.lite.tickets.exceptions.TicketNotFoundException;
 import com.servicedesk.lite.user.User;
 import com.servicedesk.lite.user.UserValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -33,7 +32,7 @@ public class TicketCommentService {
         UUID authorId = AuthContext.getUserId();
 
         Ticket ticket = ticketRepository.findByIdAndOrg_Id(ticketId, orgId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
+            .orElseThrow(() -> new TicketNotFoundException("Ticket not found"));
 
         User author = userValidator.requireActiveCreator(authorId);
 
@@ -51,7 +50,7 @@ public class TicketCommentService {
     public Page<TicketCommentResponse> listComments(UUID ticketId, Pageable pageable) {
         UUID orgId = OrgContext.getOrgId();
         ticketRepository.findByIdAndOrg_Id(ticketId, orgId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
+            .orElseThrow(() -> new TicketNotFoundException("Ticket not found"));
 
         Page<TicketComment> comments = ticketCommentRepository
             .findAllByOrg_IdAndTicket_IdOrderByCreatedAtAsc(orgId, ticketId, pageable);

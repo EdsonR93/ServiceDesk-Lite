@@ -1,5 +1,6 @@
 package com.servicedesk.lite.tickets;
 
+import com.servicedesk.lite.tickets.exceptions.TicketKeyGenerationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +21,7 @@ public class TicketKeyGenerator {
             SQL,
             Long.class);
         if (res == null) {
-            throw new IllegalStateException("Result of SQL statement is null in Key Generator");
+            throw new TicketKeyGenerationException("Failed to generate next ticket key sequence value");
         }
         return res;
     }

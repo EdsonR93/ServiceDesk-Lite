@@ -4,15 +4,17 @@ import com.servicedesk.lite.auth.AuthContext;
 import com.servicedesk.lite.org.Organization;
 import com.servicedesk.lite.org.OrganizationRepository;
 import com.servicedesk.lite.org.context.OrgContext;
+import com.servicedesk.lite.org.exception.OrganizationNotFoundException;
 import com.servicedesk.lite.tickets.dto.*;
+import com.servicedesk.lite.tickets.exceptions.InvalidAssigneeOperationException;
+import com.servicedesk.lite.tickets.exceptions.InvalidStatusTransitionException;
+import com.servicedesk.lite.tickets.exceptions.TicketNotFoundException;
 import com.servicedesk.lite.user.User;
 import com.servicedesk.lite.user.UserValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -60,7 +62,7 @@ public class TicketService {
 
     private Organization requireOrg(UUID orgId) {
         Optional<Organization> orgOpt = organizationRepository.findById(orgId);
-        return orgOpt.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Organization not found"));
+        return orgOpt.orElseThrow(() -> new OrganizationNotFoundException("Organization not found"));
     }
 
     @Transactional
@@ -68,7 +70,7 @@ public class TicketService {
         UUID orgId = OrgContext.getOrgId();
         Ticket ticket = ticketRepository
             .findByIdAndOrg_Id(ticketId, orgId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
+            .orElseThrow(() -> new TicketNotFoundException("Ticket not found"));
 
         if (req.getTitle() != null) {
             ticket.setTitle(req.getTitle());
@@ -78,10 +80,7 @@ public class TicketService {
         }
         if (Boolean.TRUE.equals(req.getClearAssignee())) {
             if (req.getAssigneeUserId() != null) {
-                throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Cannot set and clear assignee at the same time"
-                );
+                throw new InvalidAssigneeOperationException("Cannot set and clear assignee at the same time");
             }
             ticket.setAssignee(null);
         } else if (req.getAssigneeUserId() != null) {
@@ -122,10 +121,7 @@ public class TicketService {
         };
 
         if (!valid) {
-            throw new ResponseStatusException(
-                HttpStatus.CONFLICT,
-                "Invalid status transition"
-            );
+            throw new InvalidStatusTransitionException("Invalid status transition");
         }
     }
 
