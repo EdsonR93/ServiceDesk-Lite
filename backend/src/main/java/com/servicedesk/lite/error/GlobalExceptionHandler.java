@@ -12,11 +12,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
@@ -127,6 +130,23 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleInvalidStatusTransitionException(InvalidStatusTransitionException ex, HttpServletRequest request) {
         return ResponseEntity.status(CONFLICT).body(
             buildErrorResponse(CONFLICT, ex.getMessage(), request)
+        );
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request) {
+        List<ApiFieldError> validationErrors = new ArrayList<>();
+        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+            validationErrors.add(new ApiFieldError(error.getField(), error.getDefaultMessage()));
+        }
+
+        return ResponseEntity.status(BAD_REQUEST).body(new ApiErrorResponse(
+            OffsetDateTime.now(),
+            BAD_REQUEST.value(),
+            BAD_REQUEST.getReasonPhrase(),
+            "Validation failed for one or more fields",
+            request.getRequestURI(),
+            validationErrors)
         );
     }
 
