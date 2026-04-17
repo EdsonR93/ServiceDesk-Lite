@@ -3,6 +3,8 @@ package com.servicedesk.lite.org;
 import com.servicedesk.lite.org.dto.AddMemberRequest;
 import com.servicedesk.lite.org.dto.AddMemberResponse;
 import com.servicedesk.lite.org.dto.MembershipSummaryResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Memberships", description = "Organization membership management endpoints")
 @RestController
 @RequestMapping("/api/organizations/{orgId}/memberships")
 public class MembershipController {
@@ -23,6 +26,7 @@ public class MembershipController {
         this.organizationListingService = organizationListingService;
     }
 
+    @Operation(summary = "Add member to organization")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public AddMemberResponse createMembership(@PathVariable UUID orgId, @Valid @RequestBody AddMemberRequest req, @AuthenticationPrincipal Jwt jwt) {
@@ -31,6 +35,7 @@ public class MembershipController {
         return new AddMemberResponse(membershipId);
     }
 
+    @Operation(summary = "List organization members")
     @GetMapping
     public List<MembershipSummaryResponse> listOrgMembers(@PathVariable UUID orgId, @AuthenticationPrincipal Jwt jwt) {
         UUID callerId = UUID.fromString(jwt.getSubject());

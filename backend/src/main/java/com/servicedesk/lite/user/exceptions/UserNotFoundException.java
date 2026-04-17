@@ -1,4 +1,4 @@
-package com.servicedesk.lite.org.exception;
+package com.servicedesk.lite.user.exceptions;
 
 public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException(String message) {

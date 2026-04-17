@@ -1,6 +1,8 @@
 package com.servicedesk.lite.tickets;
 
 import com.servicedesk.lite.tickets.dto.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+@Tag(name = "Tickets", description = "Ticket and ticket comment endpoints")
 @RestController
 @RequestMapping("/api/tickets")
 public class TicketController {
@@ -22,6 +25,7 @@ public class TicketController {
         this.ticketCommentService = ticketCommentService;
     }
 
+    @Operation(summary = "Create ticket")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CreateTicketResponse createTicket(@Valid @RequestBody CreateTicketRequest req) {
@@ -29,22 +33,26 @@ public class TicketController {
         return new CreateTicketResponse(id);
     }
 
+    @Operation(summary = "Update ticket")
     @PutMapping("/{ticketId}")
     public TicketResponse updateTicket(@PathVariable UUID ticketId, @Valid @RequestBody UpdateTicketRequest req) {
         return ticketService.updateTicket(ticketId, req);
     }
 
+    @Operation(summary = "Add comment to ticket")
     @PostMapping("/{ticketId}/comments")
     @ResponseStatus(HttpStatus.CREATED)
     public CreateCommentResponse createComment(@PathVariable UUID ticketId, @Valid @RequestBody CreateCommentRequest req) {
         return new CreateCommentResponse(ticketCommentService.addComment(ticketId, req));
     }
 
+    @Operation(summary = "List ticket comments")
     @GetMapping("/{ticketId}/comments")
     public Page<TicketCommentResponse> listComments(@PathVariable UUID ticketId, Pageable pageable) {
         return ticketCommentService.listComments(ticketId, pageable);
     }
 
+    @Operation(summary = "List tickets")
     @GetMapping
     public Page<TicketSummaryResponse> listTickets(@RequestParam(required = false) TicketStatus status, @RequestParam(required = false) UUID assigneeUserId, @PageableDefault(sort = "createdAt",
         direction = Sort.Direction.DESC) Pageable pageable) {
